@@ -1,6 +1,5 @@
 <script>
 	import '../app.css';
-	import logo from '../../src/nc-logo.svg';
 </script>
 
 <div class="bg-gray-900">
@@ -140,14 +139,17 @@
 				</div>
 			</div> -->
 			<div class="text-center">
-				<h1 class="text-4xl font-bold tracking-tight text-white sm:text-6xl">Neuro Cortex AI</h1>
+				<div class="flex align-middle justify-center mt-5">
+					<img class="h-[17rem] w-auto" src="/NeuroCortextNewLogoRounded.png" alt="" />
+				</div>
+				<h1 class="text-4xl font-bold tracking-tight text-white sm:text-6xl">NeuroCortex Ltd</h1>
 
+				<p class="mt-1 text-lg leading-8 text-gray-300">
+					AI Systems • Software Development • Human Intelligence
+				</p>
 				<p class="mt-6 text-lg leading-8 text-gray-300">
 					This web page is under construction. It will be available soon.
 				</p>
-				<div class="flex align-middle justify-center mt-5">
-					<img class="h-[17rem] w-auto" src={logo} alt="" />
-				</div>
 				<!-- <div class="mt-10 flex items-center justify-center gap-x-6">
 					<a
 						href=""
