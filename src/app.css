@@ -1,3 +1,42 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@layer base {
+	:root {
+		color-scheme: dark;
+	}
+
+	html,
+	body {
+		@apply min-h-full bg-slate-950 text-slate-100 antialiased;
+	}
+
+	body {
+		@apply m-0 font-sans;
+	}
+
+	main {
+		@apply min-h-screen;
+	}
+
+	a {
+		@apply text-sky-300 underline-offset-4 transition-colors;
+	}
+
+	a:hover {
+		@apply text-sky-200;
+	}
+}
+
+@layer components {
+	.page-shell {
+		@apply mx-auto w-full max-w-5xl px-6 py-16 sm:px-8;
+	}
+
+	.page-title {
+		@apply text-3xl font-semibold tracking-tight sm:text-4xl;
+	}
+
+	.page-copy {
+		@apply mt-3 max-w-2xl text-base text-slate-300;
+	}
+}
