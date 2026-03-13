@@ -17,9 +17,9 @@
 					<span class="rounded-full border border-sky-500/35 bg-sky-500/10 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.12em] text-sky-200">
 						NeuroCortex Ltd
 					</span>
-					<span class="rounded-full border border-indigo-400/35 bg-indigo-500/10 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.12em] text-indigo-200">
+					<!-- <span class="rounded-full border border-indigo-400/35 bg-indigo-500/10 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.12em] text-indigo-200">
 						AI Systems Architect
-					</span>
+					</span> -->
 				</div>
 				<p class="mt-6 max-w-md text-sm leading-7 text-slate-400">{founder.role}</p>
 			</div>
