@@ -4,9 +4,9 @@
 			<a href="/about" class="text-slate-400 hover:text-white">About</a>
 			<a href="/projects" class="text-slate-400 hover:text-white">Projects</a>
 			<a href="/contact" class="text-slate-400 hover:text-white">Contact</a>
-			<a href="/blog" class="text-slate-400 hover:text-white">Blog</a>
-			<a href="/press" class="text-slate-400 hover:text-white">Press</a>
-			<a href="/accessibility" class="text-slate-400 hover:text-white">Accessibility</a>
+			<!-- <a href="/blog" class="text-slate-400 hover:text-white">Blog</a> -->
+			<!-- <a href="/press" class="text-slate-400 hover:text-white">Press</a> -->
+			<!-- <a href="/accessibility" class="text-slate-400 hover:text-white">Accessibility</a> -->
 		</nav>
 		<!--
 		<div class="mt-16 flex justify-center gap-x-10">
