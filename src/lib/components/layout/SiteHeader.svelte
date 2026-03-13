@@ -18,7 +18,7 @@
 				<button
 					type="button"
 					class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-slate-200"
-					on:click={() => (mobileMenuOpen = true)}
+					onclick={() => (mobileMenuOpen = true)}
 				>
 					<span class="sr-only">Open main menu</span>
 					<svg
@@ -54,8 +54,8 @@
 					role="button"
 					tabindex="0"
 					aria-label="Close menu backdrop"
-					on:click={() => (mobileMenuOpen = false)}
-					on:keydown={(event) => {
+					onclick={() => (mobileMenuOpen = false)}
+					onkeydown={(event) => {
 						if (event.key === 'Enter' || event.key === ' ') mobileMenuOpen = false;
 					}}
 				></div>
@@ -70,7 +70,7 @@
 						<button
 							type="button"
 							class="-m-2.5 rounded-md p-2.5 text-slate-200"
-							on:click={() => (mobileMenuOpen = false)}
+							onclick={() => (mobileMenuOpen = false)}
 						>
 							<span class="sr-only">Close menu</span>
 							<svg
