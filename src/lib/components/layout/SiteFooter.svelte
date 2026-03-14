@@ -1,3 +1,7 @@
+<script>
+	const currentYear = new Date().getFullYear();
+</script>
+
 <footer class="border-t border-slate-800 bg-slate-950">
 	<div class="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:py-24 lg:px-8">
 		<nav aria-label="Footer" class="-mb-6 flex flex-wrap justify-center gap-x-12 gap-y-3 text-sm/6">
@@ -85,8 +89,40 @@
 			</a>
 		</div>
 		-->
-		<p class="mt-10 text-center text-sm/6 text-slate-400">
-			&copy; 2026 NeuroCortex Ltd. All rights reserved.
-		</p>
+		
+		  <div class="mt-8 border-t border-gray-900/10 pt-8 dark:border-white/10">
+			<p class="flex items-center justify-center gap-2 text-sm text-gray-200 dark:text-gray-400">
+				<img class="cd_icon icons spinning h-10 w-auto" src="/NeuroCortextLogoRoundedFavicon.svg"
+				alt="Digital-Web-Solutions spinning icon" />
+				<span>{currentYear}</span>
+				<span>Neurocortex Ltd</span>
+				&copy;
+	  
+	  
+			  <span>| All Rights Reserved.</span>
+			</p>
+		  </div>
 	</div>
 </footer>
+
+<style>
+	.spinning {
+		animation: spin 20s linear infinite;
+	}
+
+	@keyframes spin {
+		from {
+			transform: rotate(0deg);
+		}
+
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.spinning {
+			animation: none;
+		}
+	}
+</style>

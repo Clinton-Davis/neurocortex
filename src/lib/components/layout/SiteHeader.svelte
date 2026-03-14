@@ -11,7 +11,7 @@
 			<div class="flex lg:hidden">
 				<a href="/" class="-m-1.5 p-1.5">
 					<span class="sr-only">NeuroCortex Ltd</span>
-					<img src="/NeuroCortextLogoRoundedFavicon.svg" alt="" class="h-8 w-auto" />
+					<img src="/NeuroCortextLogoRoundedFavicon.svg" alt="NeuroCortex Ltd logo" class="h-8 w-auto" />
 				</a>
 			</div>
 			<div class="flex lg:hidden">
