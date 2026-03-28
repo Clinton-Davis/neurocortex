@@ -1,6 +1,14 @@
 /**
  * Proxies contact submissions to the Django NeuroCortex contact API.
  *
+ * WHERE LOGS APPEAR (not in the browser DevTools console):
+ * - Local: terminal where you ran `npm run dev` (same window as Vite).
+ * - Netlify: Site → Logs (or Observability) → filter “Functions” / “Edge & serverless”,
+ *   or Deploy → Function logs. Submit the form, then refresh the log stream.
+ *
+ * Optional: set NEUROCORTEX_CONTACT_DEBUG=1 in env — 503 responses include _contactDebug
+ * so you can see hasApiUrl / hasSecret / hasOrigin in the Network → Response body.
+ *
  * Required runtime env ($env/dynamic/private):
  * - NEUROCORTEX_CONTACT_API_URL — full POST URL (e.g. https://host/api/contact/neurocortex/)
  * - NEUROCORTEX_CONTACT_API_SECRET — shared secret; sent as X-Contact-Key
@@ -43,41 +51,84 @@ function validateMessage(trimmed: string): string | null {
 	return null;
 }
 
-function validationError(message: string, errors?: FieldErrors) {
-	return json({ success: false as const, message, ...(errors ? { errors } : {}) }, { status: 400 });
-}
-
 const LOG = '[api/contact]';
 
+/** stderr is easier to find in Netlify / many hosts than stdout */
+function logContact(...args: unknown[]) {
+	console.error(LOG, ...args);
+}
+
+function contactJson(data: object, init?: { status?: number; headers?: Record<string, string> }) {
+	return json(data, {
+		...init,
+		headers: {
+			'x-neurocortex-contact-handler': '1',
+			...init?.headers
+		}
+	});
+}
+
+function validationError(message: string, errors?: FieldErrors) {
+	return contactJson(
+		{ success: false as const, message, ...(errors ? { errors } : {}) },
+		{ status: 400 }
+	);
+}
+
+function debugEnabled() {
+	const v = env.NEUROCORTEX_CONTACT_DEBUG;
+	return v === '1' || v === 'true' || v === 'yes';
+}
+
 export const POST: RequestHandler = async ({ request }) => {
+	logContact('POST received');
+
 	const apiUrl = env.NEUROCORTEX_CONTACT_API_URL;
 	const secret = env.NEUROCORTEX_CONTACT_API_SECRET;
 	const originFallback = env.NEUROCORTEX_CONTACT_ORIGIN;
 	const requestOriginHeader = request.headers.get('origin');
 	const origin = originForUpstream(request, originFallback);
 
-	console.log('apiUrl', apiUrl);
-	console.log('secret', secret);
-	console.log('originFallback', originFallback);
-	console.log('requestOriginHeader', requestOriginHeader);
-	console.log('origin', origin);
+	const hasUrl = Boolean(apiUrl?.trim());
+	const hasSecret = Boolean(secret?.trim());
 
-	if (!apiUrl?.trim() || !secret?.trim()) {
-		return json(
+	logContact('env', {
+		NEUROCORTEX_CONTACT_API_URL: hasUrl ? apiUrl!.trim() : '(missing or empty)',
+		NEUROCORTEX_CONTACT_API_SECRET: hasSecret ? `(set, length ${secret!.trim().length})` : '(missing or empty)',
+		NEUROCORTEX_CONTACT_ORIGIN: originFallback?.trim() ? originFallback.trim() : '(missing or empty)',
+		'Request-Origin header': requestOriginHeader ?? '(not sent)',
+		resolvedOriginForUpstream: origin ?? '(none — will 503)'
+	});
+
+	if (!hasUrl || !hasSecret) {
+		return contactJson(
 			{
 				success: false as const,
-				message: 'Contact form is temporarily unavailable. Please try again later or email us directly.'
+				message: 'Contact form is temporarily unavailable. Please try again later or email us directly.',
+				...(debugEnabled() && {
+					_contactDebug: {
+						tip: 'Logs are on the server (Netlify Functions / dev terminal), not the browser console.',
+						hasApiUrl: hasUrl,
+						hasSecret
+					}
+				})
 			},
 			{ status: 503 }
 		);
 	}
 
 	if (!origin) {
-		return json(
+		return contactJson(
 			{
 				success: false as const,
 				message:
-					'Contact form is misconfigured (missing Origin). Set NEUROCORTEX_CONTACT_ORIGIN for this environment.'
+					'Contact form is misconfigured (missing Origin). Set NEUROCORTEX_CONTACT_ORIGIN for this environment.',
+				...(debugEnabled() && {
+					_contactDebug: {
+						requestOriginHeader: requestOriginHeader ?? null,
+						envOriginFallback: originFallback?.trim() ?? null
+					}
+				})
 			},
 			{ status: 503 }
 		);
@@ -87,15 +138,15 @@ export const POST: RequestHandler = async ({ request }) => {
 	try {
 		body = await request.json();
 	} catch {
-		return json({ success: false as const, message: 'Invalid request body.' }, { status: 400 });
+		return contactJson({ success: false as const, message: 'Invalid request body.' }, { status: 400 });
 	}
 
 	if (body === null || typeof body !== 'object' || Array.isArray(body)) {
-		return json({ success: false as const, message: 'Invalid request body.' }, { status: 400 });
+		return contactJson({ success: false as const, message: 'Invalid request body.' }, { status: 400 });
 	}
 
 	const o = body as Record<string, unknown>;
-	console.log(`${LOG} json body`, {
+	logContact('json body', {
 		keys: Object.keys(o),
 		neurocortex: o.neurocortex,
 		neurocortexType: typeof o.neurocortex,
@@ -149,7 +200,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	let upstream: Response;
 	try {
-		console.log(`${LOG} upstream fetch`, {
+		logContact('upstream fetch', {
 			url: apiUrl.trim(),
 			OriginHeaderSent: origin.trim(),
 			bodyKeys: Object.keys(upstreamBody)
@@ -164,8 +215,8 @@ export const POST: RequestHandler = async ({ request }) => {
 			body: JSON.stringify(upstreamBody)
 		});
 	} catch (err) {
-		console.error(`${LOG} upstream fetch failed`, err);
-		return json(
+		logContact('upstream fetch failed', err);
+		return contactJson(
 			{
 				success: false as const,
 				message: 'Could not reach the mail service. Please try again later or email us directly.'
@@ -175,7 +226,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	const text = await upstream.text();
-	console.log(`${LOG} upstream response`, {
+	logContact('upstream response', {
 		status: upstream.status,
 		ok: upstream.ok,
 		bodyPreview: text.slice(0, 500)
@@ -190,7 +241,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	if (upstream.ok) {
-		return json(
+		return contactJson(
 			{
 				success: true as const,
 				message: parsed.message ?? 'Thank you. Your message has been sent.'
@@ -200,7 +251,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	if (upstream.status === 403) {
-		return json(
+		return contactJson(
 			{
 				success: false as const,
 				message:
@@ -215,7 +266,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			? parsed.message
 			: 'Something went wrong. Please try again.';
 
-	return json(
+	return contactJson(
 		{
 			success: false as const,
 			message: msg,
