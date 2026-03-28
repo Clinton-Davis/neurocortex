@@ -1,36 +1,22 @@
 /**
  * Proxies contact submissions to the Django NeuroCortex contact API.
  *
- * WHERE LOGS APPEAR (not in the browser DevTools console):
- * - Local: terminal where you ran `npm run dev` (same window as Vite).
- * - Netlify: Site → Logs (or Observability) → filter “Functions” / “Edge & serverless”,
- *   or Deploy → Function logs. Submit the form, then refresh the log stream.
+ * Env vars are read at BUILD time via $env/static/private so they are
+ * baked into the Netlify serverless function. This is safe because the
+ * function code is never served to the browser.
  *
- * Optional: set NEUROCORTEX_CONTACT_DEBUG=1 in env — 503 responses include _contactDebug
- * so you can see hasApiUrl / hasSecret / hasOrigin in the Network → Response body.
- *
- * Required runtime env ($env/dynamic/private):
+ * Required env (set in Netlify UI → Environment variables, or in .env locally):
  * - NEUROCORTEX_CONTACT_API_URL — full POST URL (e.g. https://host/api/contact/neurocortex/)
  * - NEUROCORTEX_CONTACT_API_SECRET — shared secret; sent as X-Contact-Key
- * - NEUROCORTEX_CONTACT_ORIGIN — fallback Origin for upstream if the browser request has no Origin header
- *   (normal browser POSTs send Origin automatically; that value is forwarded so it must exist in
- *   Django NEUROCORTEX_CORS_ORIGINS — include both http://localhost:5173 and http://127.0.0.1:5173 in dev)
+ * - NEUROCORTEX_CONTACT_ORIGIN — fallback Origin for upstream if the browser has no Origin header
  */
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-// @ts-expect-error node:process exists at runtime in Netlify Functions (Node)
-import process from 'node:process';
+import {
+	NEUROCORTEX_CONTACT_API_URL,
+	NEUROCORTEX_CONTACT_API_SECRET,
+	NEUROCORTEX_CONTACT_ORIGIN
+} from '$env/static/private';
 
-/**
- * SvelteKit $env/dynamic/private is populated from process.env at server.init(),
- * but on some Netlify deploys the vars aren't visible there.
- * Fall back to process.env directly.
- */
-function getEnv(key: string): string | undefined {
-	return env[key] ?? process.env[key];
-}
-
-/** Prefer the real page origin so localhost vs 127.0.0.1 matches how the user opened the site. */
 function originForUpstream(request: Request, fallback: string | undefined): string | undefined {
 	const h = request.headers.get('origin')?.trim();
 	if (h && h.toLowerCase() !== 'null') return h;
@@ -62,20 +48,10 @@ function validateMessage(trimmed: string): string | null {
 	return null;
 }
 
-const LOG = '[api/contact]';
-
-/** stderr is easier to find in Netlify / many hosts than stdout */
-function logContact(...args: unknown[]) {
-	console.error(LOG, ...args);
-}
-
-function contactJson(data: object, init?: { status?: number; headers?: Record<string, string> }) {
+function contactJson(data: object, init?: { status?: number }) {
 	return json(data, {
 		...init,
-		headers: {
-			'x-neurocortex-contact-handler': '1',
-			...init?.headers
-		}
+		headers: { 'x-neurocortex-contact-handler': '1' }
 	});
 }
 
@@ -86,49 +62,16 @@ function validationError(message: string, errors?: FieldErrors) {
 	);
 }
 
-function debugEnabled() {
-	const v = getEnv('NEUROCORTEX_CONTACT_DEBUG');
-	return v === '1' || v === 'true' || v === 'yes';
-}
-
 export const POST: RequestHandler = async ({ request }) => {
-	logContact('POST received');
+	const apiUrl = NEUROCORTEX_CONTACT_API_URL;
+	const secret = NEUROCORTEX_CONTACT_API_SECRET;
+	const origin = originForUpstream(request, NEUROCORTEX_CONTACT_ORIGIN);
 
-	const apiUrl = getEnv('NEUROCORTEX_CONTACT_API_URL');
-	const secret = getEnv('NEUROCORTEX_CONTACT_API_SECRET');
-	const originFallback = getEnv('NEUROCORTEX_CONTACT_ORIGIN');
-	const requestOriginHeader = request.headers.get('origin');
-	const origin = originForUpstream(request, originFallback);
-
-	const hasUrl = Boolean(apiUrl?.trim());
-	const hasSecret = Boolean(secret?.trim());
-
-	logContact('env', {
-		NEUROCORTEX_CONTACT_API_URL: hasUrl ? apiUrl!.trim() : '(missing or empty)',
-		NEUROCORTEX_CONTACT_API_SECRET: hasSecret ? `(set, length ${secret!.trim().length})` : '(missing or empty)',
-		NEUROCORTEX_CONTACT_ORIGIN: originFallback?.trim() ? originFallback.trim() : '(missing or empty)',
-		'Request-Origin header': requestOriginHeader ?? '(not sent)',
-		resolvedOriginForUpstream: origin ?? '(none — will 503)',
-		source: env.NEUROCORTEX_CONTACT_API_URL ? '$env/dynamic/private' : 'process.env fallback'
-	});
-
-	if (!hasUrl || !hasSecret) {
-		const svelteEnvKeys = Object.keys(env).sort();
-		const processEnvKeys = Object.keys(process.env).sort();
-		const neurocortexInProcess = processEnvKeys.filter((k) => k.startsWith('NEUROCORTEX'));
+	if (!apiUrl?.trim() || !secret?.trim()) {
 		return contactJson(
 			{
 				success: false as const,
-				message: 'Contact form is temporarily unavailable. Please try again later or email us directly.',
-				_debug: {
-					hasApiUrl: hasUrl,
-					hasSecret,
-					svelteEnvCount: svelteEnvKeys.length,
-					processEnvCount: processEnvKeys.length,
-					neurocortexInSvelteEnv: svelteEnvKeys.filter((k) => k.startsWith('NEUROCORTEX')),
-					neurocortexInProcessEnv: neurocortexInProcess,
-					tip: 'If both are empty, Netlify has not injected the vars. Clear cache and redeploy.'
-				}
+				message: 'Contact form is temporarily unavailable. Please try again later or email us directly.'
 			},
 			{ status: 503 }
 		);
@@ -139,13 +82,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			{
 				success: false as const,
 				message:
-					'Contact form is misconfigured (missing Origin). Set NEUROCORTEX_CONTACT_ORIGIN for this environment.',
-				...(debugEnabled() && {
-					_contactDebug: {
-						requestOriginHeader: requestOriginHeader ?? null,
-						envOriginFallback: originFallback?.trim() ?? null
-					}
-				})
+					'Contact form is misconfigured (missing Origin). Set NEUROCORTEX_CONTACT_ORIGIN for this environment.'
 			},
 			{ status: 503 }
 		);
@@ -163,18 +100,6 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	const o = body as Record<string, unknown>;
-	logContact('json body', {
-		keys: Object.keys(o),
-		neurocortex: o.neurocortex,
-		neurocortexType: typeof o.neurocortex,
-		name: typeof o.name === 'string' ? o.name : `(not a string: ${typeof o.name})`,
-		email: typeof o.email === 'string' ? o.email : `(not a string: ${typeof o.email})`,
-		message:
-			typeof o.message === 'string'
-				? `(length ${o.message.length}) ${o.message.slice(0, 120)}${o.message.length > 120 ? '…' : ''}`
-				: `(not a string: ${typeof o.message})`,
-		company: typeof o.company === 'string' ? `(length ${o.company.length})` : '(absent or not a string)'
-	});
 
 	if (o.neurocortex !== true) {
 		return validationError('Request must include JSON boolean "neurocortex": true.', {
@@ -217,24 +142,16 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	let upstream: Response;
 	try {
-		const url = apiUrl!.trim();
-		const key = secret!.trim();
-		logContact('upstream fetch', {
-			url,
-			OriginHeaderSent: origin.trim(),
-			bodyKeys: Object.keys(upstreamBody)
-		});
-		upstream = await fetch(url, {
+		upstream = await fetch(apiUrl.trim(), {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json; charset=utf-8',
-				'X-Contact-Key': key,
+				'X-Contact-Key': secret.trim(),
 				Origin: origin.trim()
 			},
 			body: JSON.stringify(upstreamBody)
 		});
-	} catch (err) {
-		logContact('upstream fetch failed', err);
+	} catch {
 		return contactJson(
 			{
 				success: false as const,
@@ -245,11 +162,6 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	const text = await upstream.text();
-	logContact('upstream response', {
-		status: upstream.status,
-		ok: upstream.ok,
-		bodyPreview: text.slice(0, 500)
-	});
 	let parsed: { success?: boolean; message?: string; errors?: FieldErrors } = {};
 	if (text) {
 		try {
