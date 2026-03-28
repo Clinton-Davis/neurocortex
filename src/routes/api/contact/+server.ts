@@ -18,6 +18,17 @@
  */
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
+// @ts-expect-error node:process exists at runtime in Netlify Functions (Node)
+import process from 'node:process';
+
+/**
+ * SvelteKit $env/dynamic/private is populated from process.env at server.init(),
+ * but on some Netlify deploys the vars aren't visible there.
+ * Fall back to process.env directly.
+ */
+function getEnv(key: string): string | undefined {
+	return env[key] ?? process.env[key];
+}
 
 /** Prefer the real page origin so localhost vs 127.0.0.1 matches how the user opened the site. */
 function originForUpstream(request: Request, fallback: string | undefined): string | undefined {
@@ -76,16 +87,16 @@ function validationError(message: string, errors?: FieldErrors) {
 }
 
 function debugEnabled() {
-	const v = env.NEUROCORTEX_CONTACT_DEBUG;
+	const v = getEnv('NEUROCORTEX_CONTACT_DEBUG');
 	return v === '1' || v === 'true' || v === 'yes';
 }
 
 export const POST: RequestHandler = async ({ request }) => {
 	logContact('POST received');
 
-	const apiUrl = env.NEUROCORTEX_CONTACT_API_URL;
-	const secret = env.NEUROCORTEX_CONTACT_API_SECRET;
-	const originFallback = env.NEUROCORTEX_CONTACT_ORIGIN;
+	const apiUrl = getEnv('NEUROCORTEX_CONTACT_API_URL');
+	const secret = getEnv('NEUROCORTEX_CONTACT_API_SECRET');
+	const originFallback = getEnv('NEUROCORTEX_CONTACT_ORIGIN');
 	const requestOriginHeader = request.headers.get('origin');
 	const origin = originForUpstream(request, originFallback);
 
@@ -97,12 +108,14 @@ export const POST: RequestHandler = async ({ request }) => {
 		NEUROCORTEX_CONTACT_API_SECRET: hasSecret ? `(set, length ${secret!.trim().length})` : '(missing or empty)',
 		NEUROCORTEX_CONTACT_ORIGIN: originFallback?.trim() ? originFallback.trim() : '(missing or empty)',
 		'Request-Origin header': requestOriginHeader ?? '(not sent)',
-		resolvedOriginForUpstream: origin ?? '(none — will 503)'
+		resolvedOriginForUpstream: origin ?? '(none — will 503)',
+		source: env.NEUROCORTEX_CONTACT_API_URL ? '$env/dynamic/private' : 'process.env fallback'
 	});
 
 	if (!hasUrl || !hasSecret) {
-		const allEnvKeys = Object.keys(env).sort();
-		const neurocortexKeys = allEnvKeys.filter((k) => k.startsWith('NEUROCORTEX'));
+		const svelteEnvKeys = Object.keys(env).sort();
+		const processEnvKeys = Object.keys(process.env).sort();
+		const neurocortexInProcess = processEnvKeys.filter((k) => k.startsWith('NEUROCORTEX'));
 		return contactJson(
 			{
 				success: false as const,
@@ -110,11 +123,11 @@ export const POST: RequestHandler = async ({ request }) => {
 				_debug: {
 					hasApiUrl: hasUrl,
 					hasSecret,
-					apiUrlType: typeof apiUrl,
-					secretType: typeof secret,
-					neurocortexEnvKeys: neurocortexKeys,
-					totalEnvKeys: allEnvKeys.length,
-					sampleEnvKeys: allEnvKeys.slice(0, 15)
+					svelteEnvCount: svelteEnvKeys.length,
+					processEnvCount: processEnvKeys.length,
+					neurocortexInSvelteEnv: svelteEnvKeys.filter((k) => k.startsWith('NEUROCORTEX')),
+					neurocortexInProcessEnv: neurocortexInProcess,
+					tip: 'If both are empty, Netlify has not injected the vars. Clear cache and redeploy.'
 				}
 			},
 			{ status: 503 }
@@ -204,16 +217,18 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	let upstream: Response;
 	try {
+		const url = apiUrl!.trim();
+		const key = secret!.trim();
 		logContact('upstream fetch', {
-			url: apiUrl.trim(),
+			url,
 			OriginHeaderSent: origin.trim(),
 			bodyKeys: Object.keys(upstreamBody)
 		});
-		upstream = await fetch(apiUrl.trim(), {
+		upstream = await fetch(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json; charset=utf-8',
-				'X-Contact-Key': secret.trim(),
+				'X-Contact-Key': key,
 				Origin: origin.trim()
 			},
 			body: JSON.stringify(upstreamBody)
