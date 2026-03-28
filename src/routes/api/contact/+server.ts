@@ -8,7 +8,6 @@
  *   (normal browser POSTs send Origin automatically; that value is forwarded so it must exist in
  *   Django NEUROCORTEX_CORS_ORIGINS — include both http://localhost:5173 and http://127.0.0.1:5173 in dev)
  */
-import { dev } from '$app/environment';
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 
@@ -48,13 +47,25 @@ function validationError(message: string, errors?: FieldErrors) {
 	return json({ success: false as const, message, ...(errors ? { errors } : {}) }, { status: 400 });
 }
 
+const LOG = '[api/contact]';
+
 export const POST: RequestHandler = async ({ request }) => {
 	const apiUrl = env.NEUROCORTEX_CONTACT_API_URL;
 	const secret = env.NEUROCORTEX_CONTACT_API_SECRET;
-	const origin = originForUpstream(request, env.NEUROCORTEX_CONTACT_ORIGIN);
-	console.log('apiUrl', apiUrl);
-	console.log('secret', secret);
-	console.log('origin', origin);
+	const originFallback = env.NEUROCORTEX_CONTACT_ORIGIN;
+	const requestOriginHeader = request.headers.get('origin');
+	const origin = originForUpstream(request, originFallback);
+
+	console.log(`${LOG} env`, {
+		NEUROCORTEX_CONTACT_API_URL: apiUrl?.trim() ? apiUrl.trim() : '(missing or empty)',
+		NEUROCORTEX_CONTACT_API_SECRET: secret?.trim()
+			? `(set, length ${secret.trim().length})`
+			: '(missing or empty)',
+		NEUROCORTEX_CONTACT_ORIGIN: originFallback?.trim() ? originFallback.trim() : '(missing or empty)',
+		'Request-Origin header': requestOriginHeader ?? '(not sent)',
+		resolvedOriginForUpstream: origin ?? '(none — will 503)'
+	});
+
 	if (!apiUrl?.trim() || !secret?.trim()) {
 		return json(
 			{
@@ -88,6 +99,18 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	const o = body as Record<string, unknown>;
+	console.log(`${LOG} json body`, {
+		keys: Object.keys(o),
+		neurocortex: o.neurocortex,
+		neurocortexType: typeof o.neurocortex,
+		name: typeof o.name === 'string' ? o.name : `(not a string: ${typeof o.name})`,
+		email: typeof o.email === 'string' ? o.email : `(not a string: ${typeof o.email})`,
+		message:
+			typeof o.message === 'string'
+				? `(length ${o.message.length}) ${o.message.slice(0, 120)}${o.message.length > 120 ? '…' : ''}`
+				: `(not a string: ${typeof o.message})`,
+		company: typeof o.company === 'string' ? `(length ${o.company.length})` : '(absent or not a string)'
+	});
 
 	if (o.neurocortex !== true) {
 		return validationError('Request must include JSON boolean "neurocortex": true.', {
@@ -130,6 +153,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	let upstream: Response;
 	try {
+		console.log(`${LOG} upstream fetch`, {
+			url: apiUrl.trim(),
+			OriginHeaderSent: origin.trim(),
+			bodyKeys: Object.keys(upstreamBody)
+		});
 		upstream = await fetch(apiUrl.trim(), {
 			method: 'POST',
 			headers: {
@@ -139,7 +167,8 @@ export const POST: RequestHandler = async ({ request }) => {
 			},
 			body: JSON.stringify(upstreamBody)
 		});
-	} catch {
+	} catch (err) {
+		console.error(`${LOG} upstream fetch failed`, err);
 		return json(
 			{
 				success: false as const,
@@ -150,9 +179,11 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	const text = await upstream.text();
-	if (dev && !upstream.ok) {
-		console.warn('[api/contact] upstream', upstream.status, text.slice(0, 500));
-	}
+	console.log(`${LOG} upstream response`, {
+		status: upstream.status,
+		ok: upstream.ok,
+		bodyPreview: text.slice(0, 500)
+	});
 	let parsed: { success?: boolean; message?: string; errors?: FieldErrors } = {};
 	if (text) {
 		try {
