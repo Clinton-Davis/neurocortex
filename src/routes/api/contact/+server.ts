@@ -101,17 +101,21 @@ export const POST: RequestHandler = async ({ request }) => {
 	});
 
 	if (!hasUrl || !hasSecret) {
+		const allEnvKeys = Object.keys(env).sort();
+		const neurocortexKeys = allEnvKeys.filter((k) => k.startsWith('NEUROCORTEX'));
 		return contactJson(
 			{
 				success: false as const,
 				message: 'Contact form is temporarily unavailable. Please try again later or email us directly.',
-				...(debugEnabled() && {
-					_contactDebug: {
-						tip: 'Logs are on the server (Netlify Functions / dev terminal), not the browser console.',
-						hasApiUrl: hasUrl,
-						hasSecret
-					}
-				})
+				_debug: {
+					hasApiUrl: hasUrl,
+					hasSecret,
+					apiUrlType: typeof apiUrl,
+					secretType: typeof secret,
+					neurocortexEnvKeys: neurocortexKeys,
+					totalEnvKeys: allEnvKeys.length,
+					sampleEnvKeys: allEnvKeys.slice(0, 15)
+				}
 			},
 			{ status: 503 }
 		);
