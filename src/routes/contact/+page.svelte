@@ -45,9 +45,16 @@
 		return true;
 	}
 
-	/** @param {SubmitEvent} e */
-	async function handleSubmit(e) {
+	/**
+	 * Sync wrapper so preventDefault runs before any await (avoids native form submit / mailto fallback).
+	 * @param {SubmitEvent} e
+	 */
+	function handleSubmit(e) {
 		e.preventDefault();
+		void submitContactForm();
+	}
+
+	async function submitContactForm() {
 		if (submitting) return;
 		if (!validateClient()) return;
 
@@ -158,9 +165,20 @@
 
 			<form
 				class="relative rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 shadow-[0_0_60px_-30px_rgba(56,189,248,0.4)] backdrop-blur-sm sm:p-8"
+				method="post"
 				onsubmit={handleSubmit}
 				novalidate
 			>
+				<noscript>
+					<div
+						class="mb-6 rounded-xl border border-amber-500/40 bg-amber-950/40 px-4 py-3 text-sm text-amber-100"
+					>
+						JavaScript is required to send this form. Email us at
+						<a class="text-sky-300 underline" href="mailto:transform@clintondavis.com"
+							>transform@clintondavis.com</a
+						>.
+					</div>
+				</noscript>
 				{#if formError}
 					<div
 						class="mb-6 rounded-xl border border-amber-500/40 bg-amber-950/40 px-4 py-3 text-sm text-amber-100"

@@ -12,7 +12,6 @@
 		"format": "prettier --plugin-search-dir . --write ."
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "^7.0.1",
 		"@sveltejs/adapter-netlify": "^6.0.4",
 		"@sveltejs/kit": "^2.53.4",
 		"@tailwindcss/postcss": "^4.2.1",
