@@ -56,15 +56,11 @@ export const POST: RequestHandler = async ({ request }) => {
 	const requestOriginHeader = request.headers.get('origin');
 	const origin = originForUpstream(request, originFallback);
 
-	console.log(`${LOG} env`, {
-		NEUROCORTEX_CONTACT_API_URL: apiUrl?.trim() ? apiUrl.trim() : '(missing or empty)',
-		NEUROCORTEX_CONTACT_API_SECRET: secret?.trim()
-			? `(set, length ${secret.trim().length})`
-			: '(missing or empty)',
-		NEUROCORTEX_CONTACT_ORIGIN: originFallback?.trim() ? originFallback.trim() : '(missing or empty)',
-		'Request-Origin header': requestOriginHeader ?? '(not sent)',
-		resolvedOriginForUpstream: origin ?? '(none — will 503)'
-	});
+	console.log('apiUrl', apiUrl);
+	console.log('secret', secret);
+	console.log('originFallback', originFallback);
+	console.log('requestOriginHeader', requestOriginHeader);
+	console.log('origin', origin);
 
 	if (!apiUrl?.trim() || !secret?.trim()) {
 		return json(
