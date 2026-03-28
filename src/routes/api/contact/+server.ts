@@ -52,7 +52,9 @@ export const POST: RequestHandler = async ({ request }) => {
 	const apiUrl = env.NEUROCORTEX_CONTACT_API_URL;
 	const secret = env.NEUROCORTEX_CONTACT_API_SECRET;
 	const origin = originForUpstream(request, env.NEUROCORTEX_CONTACT_ORIGIN);
-
+	console.log('apiUrl', apiUrl);
+	console.log('secret', secret);
+	console.log('origin', origin);
 	if (!apiUrl?.trim() || !secret?.trim()) {
 		return json(
 			{
