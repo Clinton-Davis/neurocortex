@@ -86,6 +86,13 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	const o = body as Record<string, unknown>;
+
+	if (o.neurocortex !== true) {
+		return validationError('Request must include JSON boolean "neurocortex": true.', {
+			neurocortex: ['Must be the JSON literal true.']
+		});
+	}
+
 	const nameRaw = typeof o.name === 'string' ? o.name : '';
 	const emailRaw = typeof o.email === 'string' ? o.email : '';
 	const messageRaw = typeof o.message === 'string' ? o.message : '';

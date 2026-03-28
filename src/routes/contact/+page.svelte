@@ -66,6 +66,7 @@
 			name: name.trim(),
 			email: email.trim(),
 			message: message.trim(),
+			neurocortex: true,
 			...(company.trim() ? { company: company.trim() } : {})
 		};
 
