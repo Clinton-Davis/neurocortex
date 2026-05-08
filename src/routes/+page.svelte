@@ -8,7 +8,7 @@
 
 <section class="relative isolate overflow-hidden">
 	<img
-		src="NCI-BackDrop.png"
+		src="NCI-BackDrop.webp"
 		alt="NeuroCortex background"
 		class="absolute inset-0 -z-30 h-full w-full object-cover"
 	/>
@@ -26,12 +26,12 @@
 					<div class="absolute inset-0 rounded-full bg-cyan-400/20 blur-3xl"></div>
 					<img
 						class="relative mx-auto h-84 w-84 object-contain md:hidden rounded-3xl"
-						src="/NCIcon-SR.png"
+						src="/NCIcon-SR.webp"
 						alt="NeuroCortex logo"
 					/>
 					<img
 						class="relative hidden h-48 w-auto sm:h-56 lg:h-94 md:block rounded-3xl"
-						src="/NC-logo-banner.png"
+						src="/NCI-banner.webp"
 						alt="NeuroCortex logo"
 					/>
 				</div>
@@ -75,7 +75,7 @@
 
 <section id="what-we-do" class="relative isolate overflow-hidden py-24 sm:py-28">
 	<img
-		src="/NCI-BG-Sw-2.png"
+		src="/NCI-BG-Sw-2.webp"
 		alt=""
 		class="pointer-events-none absolute inset-0 -z-30 h-full w-full object-cover"
 	/>
