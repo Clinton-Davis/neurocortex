@@ -90,18 +90,25 @@
 		</div>
 		-->
 		
-		  <div class="mt-8 border-t border-gray-900/10 pt-8 dark:border-white/10">
-			<p class="flex items-center justify-center gap-2 text-sm text-gray-200 dark:text-gray-400">
-				<img class="cd_icon icons spinning h-10 w-auto" src="/NeuroCortextLogoRoundedFavicon.svg"
-				alt="Digital-Web-Solutions spinning icon" />
-				<span>{currentYear}</span>
-				<span>Neurocortex Ltd</span>
-				&copy;
-	  
-	  
-			  <span>| All Rights Reserved.</span>
-			</p>
-		  </div>
+		<div class="mt-8 border-t border-gray-900/10 pt-8 dark:border-white/10">
+			<div
+				class="flex flex-col items-center justify-center gap-4 md:flex-row-reverse md:items-center md:gap-3"
+			>
+				<p
+					class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-sm text-gray-200 dark:text-gray-400"
+				>
+					<span>{currentYear}</span>
+					<span>Neurocortex Ltd</span>
+					<span>&copy;</span>
+					<span>| All Rights Reserved.</span>
+				</p>
+				<img
+					class="cd_icon icons spinning h-10 w-auto shrink-0"
+					src="/nci_trans-light.png"
+					alt="NeuroCortex logo"
+				/>
+			</div>
+		</div>
 	</div>
 </footer>
 

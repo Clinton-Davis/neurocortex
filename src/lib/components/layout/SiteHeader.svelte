@@ -11,7 +11,7 @@
 			<div class="flex lg:hidden">
 				<a href="/" class="-m-1.5 p-1.5">
 					<span class="sr-only">NeuroCortex Ltd</span>
-					<img src="/NeuroCortextLogoRoundedFavicon.svg" alt="NeuroCortex Ltd logo" class="h-8 w-auto" />
+					<img src="/nci_trans-light.png" alt="NeuroCortex Ltd logo" class="h-8 w-auto" />
 				</a>
 			</div>
 			<div class="flex lg:hidden">
@@ -40,7 +40,7 @@
 			<div class="hidden lg:absolute lg:left-1/2 lg:flex lg:-translate-x-1/2 lg:items-center lg:gap-x-10">
 				<a href="/" class="-m-1.5 p-1.5">
 					<span class="sr-only">NeuroCortex Ltd</span>
-					<img src="/NeuroCortextLogoRoundedFavicon.svg" alt="" class="h-8 w-auto" />
+					<img src="/nci_trans-light.png" alt="" class="h-8 w-auto" />
 				</a>
 				<a href="/about" class="text-sm/6 font-semibold text-slate-200 hover:text-white">About</a>
 				<a href="/projects" class="text-sm/6 font-semibold text-slate-200 hover:text-white">Projects</a>
@@ -65,7 +65,7 @@
 					<div class="flex items-center justify-between">
 						<a href="/" class="-m-1.5 p-1.5">
 							<span class="sr-only">NeuroCortex Ltd</span>
-							<img src="/NeuroCortextLogoRoundedFavicon.svg" alt="" class="h-8 w-auto" />
+							<img src="/nci_trans-light.png" alt="" class="h-8 w-auto" />
 						</a>
 						<button
 							type="button"

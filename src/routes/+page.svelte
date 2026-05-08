@@ -8,8 +8,8 @@
 
 <section class="relative isolate overflow-hidden">
 	<img
-		src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2830&q=80&blend=111827&sat=-100&exp=15&blend-mode=multiply"
-		alt=""
+		src="NCI-BackDrop.png"
+		alt="NeuroCortex background"
 		class="absolute inset-0 -z-30 h-full w-full object-cover"
 	/>
 
@@ -19,24 +19,29 @@
 		class="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.18),transparent_30%),radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.12),transparent_25%),radial-gradient(circle_at_50%_80%,rgba(168,85,247,0.10),transparent_30%)]"
 	></div>
 
-	<div class="mx-auto max-w-7xl px-6 pb-24 pt-20 sm:pt-28 lg:px-8 lg:pb-32 lg:pt-32">
-		<div class="mx-auto max-w-4xl text-center">
+	<div class="mx-auto max-w-7xl px-6 pb-24 pt-12 sm:pt-12 lg:px-8 lg:pb-32 lg:pt-12">
+		<div class="mx-auto max-w-7xl text-center rounded-3xl">
 			<div class="flex justify-center">
-				<div class="relative">
+				<div class="relative rounded-3xl">
 					<div class="absolute inset-0 rounded-full bg-cyan-400/20 blur-3xl"></div>
 					<img
-						class="relative h-48 w-auto sm:h-56 lg:h-64"
-						src="/NeuroCortextNewLogoRounded.png"
+						class="relative mx-auto h-84 w-84 object-contain md:hidden rounded-3xl"
+						src="/NCIcon-SR.png"
+						alt="NeuroCortex logo"
+					/>
+					<img
+						class="relative hidden h-48 w-auto sm:h-56 lg:h-94 md:block rounded-3xl"
+						src="/NC-logo-banner.png"
 						alt="NeuroCortex logo"
 					/>
 				</div>
 			</div>
 
 			<p class="mt-8 text-xs font-semibold uppercase tracking-[0.35em] text-cyan-300">
-				NeuroCortex Ltd
+			 EVOLUTION OF THOUGHT
 			</p>
 
-			<h1 class="mt-4 text-5xl font-semibold tracking-tight text-white sm:text-6xl lg:text-7xl">
+			<h1 class="mt-4 text-5xl max-w-4xl mx-auto font-semibold tracking-tight text-white sm:text-6xl lg:text-7xl">
 				Expanding what human intelligence is capable of.
 			</h1>
 
@@ -68,12 +73,18 @@
 	</div>
 </section>
 
-<section id="what-we-do" class="relative bg-slate-950 py-24 sm:py-28">
+<section id="what-we-do" class="relative isolate overflow-hidden py-24 sm:py-28">
+	<img
+		src="/NCI-BG-Sw-2.png"
+		alt=""
+		class="pointer-events-none absolute inset-0 -z-30 h-full w-full object-cover"
+	/>
+	<div class="pointer-events-none absolute inset-0 -z-20 bg-slate-950/85"></div>
 	<div
-		class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.08),transparent_25%),radial-gradient(circle_at_80%_30%,rgba(99,102,241,0.08),transparent_30%)]"
+		class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.08),transparent_25%),radial-gradient(circle_at_80%_30%,rgba(99,102,241,0.08),transparent_30%)]"
 	></div>
 
-	<div class="relative mx-auto max-w-7xl px-6 lg:px-8">
+	<div class="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
 		<div class="mx-auto max-w-3xl text-center">
 			<p class="text-xs font-semibold uppercase tracking-[0.3em] text-cyan-300">
 				Capabilities
@@ -120,19 +131,19 @@
 				<ul class="mt-5 space-y-3 text-sm leading-7 text-slate-300">
 					<li class="flex gap-3">
 						<span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-cyan-300"></span>
-						<span>pattern recognition in thinking</span>
+						<span>Pattern Recognition in Thinking</span>
 					</li>
 					<li class="flex gap-3">
 						<span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-cyan-300"></span>
-						<span>structured reflection</span>
+						<span>Structured Reflection</span>
 					</li>
 					<li class="flex gap-3">
 						<span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-cyan-300"></span>
-						<span>decision clarity</span>
+						<span>Decision Clarity</span>
 					</li>
 					<li class="flex gap-3">
 						<span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-cyan-300"></span>
-						<span>cognitive insight</span>
+						<span>Cognitive Insight</span>
 					</li>
 				</ul>
 			</div>
@@ -159,25 +170,25 @@
 				<ul class="mt-5 space-y-3 text-sm leading-7 text-slate-300">
 					<li class="flex gap-3">
 						<span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-cyan-300"></span>
-						<span>clean system design</span>
+						<span>Clean System Design</span>
 					</li>
 					<li class="flex gap-3">
 						<span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-cyan-300"></span>
-						<span>practical AI integration</span>
+						<span>Practical AI Integration</span>
 					</li>
 					<li class="flex gap-3">
 						<span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-cyan-300"></span>
-						<span>thoughtful digital experiences</span>
+						<span>Thoughtful Digital Experiences</span>
 					</li>
 					<li class="flex gap-3">
 						<span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-cyan-300"></span>
-						<span>human-centred system delivery</span>
+						<span>Human-Centred System Delivery</span>
 					</li>
 				</ul>
 			</div>
 
 			<div
-				class="rounded-3xl border border-white/10 bg-white/[0.03] p-8 shadow-2xl shadow-cyan-950/10 backdrop-blur"
+				class="rounded-3xl border border-white/10 bg-white/3 p-8 shadow-2xl shadow-cyan-950/10 backdrop-blur"
 			>
 				<p class="text-xs font-semibold uppercase tracking-[0.25em] text-cyan-300">
 					Intelligence
@@ -199,23 +210,23 @@
 				<ul class="mt-5 space-y-3 text-sm leading-7 text-slate-300">
 					<li class="flex gap-3">
 						<span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-cyan-300"></span>
-						<span>understand their thinking patterns</span>
+						<span>Understand Their Thinking Patterns</span>
 					</li>
 					<li class="flex gap-3">
 						<span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-cyan-300"></span>
-						<span>challenge limiting beliefs</span>
+						<span>Challenge Limiting Beliefs</span>
 					</li>
 					<li class="flex gap-3">
 						<span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-cyan-300"></span>
-						<span>develop clearer decision making</span>
+						<span>Develop Clearer Decision Making</span>
 					</li>
 					<li class="flex gap-3">
 						<span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-cyan-300"></span>
-						<span>greater self-awareness</span>
+						<span>Greater Self-Awareness</span>
 					</li>
 					<li class="flex gap-3">
 						<span class="mt-2 h-2 w-2 shrink-0 rounded-full bg-cyan-300"></span>
-						<span>create meaningful personal change</span>
+						<span>Create Meaningful Personal Change</span>
 					</li>
 				</ul>
 			</div>
