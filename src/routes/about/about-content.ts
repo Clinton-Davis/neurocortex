@@ -1,11 +1,13 @@
 export const aboutContent = {
 	hero: {
 		headline: 'NeuroCortex',
+		eyebrow: 'NeuroCortex Ltd',
+		statement: 'NeuroCortex exists for one reason.',
+		goal: 'To helps humans think better using psycological and technology.',
 		intro: [
-			'NeuroCortex Ltd is an Irish technology company focused on building intelligent systems that enhance how humans think, learn, and make decisions.',
+			'NeuroCortex is an Irish company building intelligent systems that support clearer thinking, deeper reflection, better learning, and better decision making.',
 			'We operate at the intersection of artificial intelligence, software engineering, and human cognitive development.'
-		],
-		goal: 'Where human intelligence meets intelligent systems.'
+		]
 	},
 	mission: {
 		title: 'Our Mission',
@@ -73,14 +75,14 @@ export const aboutContent = {
 		name: 'Clinton Davis',
 		role: 'Founder, NeuroCortex Ltd',
 		paragraphs: [
-			'Clinton Davis is a software engineer, AI systems architect, and transformation coach with of experience across technology and personal development.',
-			'His career spans software engineering, entrepreneurship, and human development, combining technical knowledge with a passion for understanding how people think, feel, and grow.',
-			'Through NeuroCortex, Clinton brings these two worlds together: building intelligent systems while also supporting the development of human intelligence.'
+			'Clinton Davis is a software developer, entrepreneur, and transformation coach with experience across technology, AI-assisted product development, and personal development.',
+			'His work combines software engineering, prompt design, entrepreneurship, and a deep interest in how people think, feel, learn, and grow.',
+			'Through NeuroCortex, Clinton brings these worlds together: building intelligent systems that support clearer thinking, deeper reflection, better learning, and the development of human intelligence.'
 		]
 	},
 	closing: {
-		title: 'NeuroCortex exists for one reason',
-		goal: 'To build technology that helps humans think better.',
+		title: 'The Future NeuroCortex Is Building Toward',
+		goal: 'Technology that strengthens human intelligence.',
 		paragraphs: [
 			'As humanity grows as an intelligent species, the technologies we create will grow with us.',
 			'Not as replacements for human intelligence, but as partners to it.',

@@ -8,20 +8,26 @@
 	<div class="about-container">
 		<div class="grid items-center gap-14 lg:grid-cols-[1.08fr_0.92fr] lg:gap-20">
 			<div>
-				<p class="about-kicker">NeuroCortex Ltd</p>
+				<p class="about-kicker">{hero.eyebrow}</p>
 				<h1 class="mt-6 max-w-3xl text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl">
 					{hero.headline}
 				</h1>
+				<h2 class="mt-6 max-w-3xl text-2xl font-bold tracking-tight text-white sm:text-6xl lg:text-2xl">
+					{hero.statement}
+				</h2>
+				<p class="mt-6 max-w-2xl text-xl font-semibold tracking-tight text-slate-100 sm:text-1xl">
+					{hero.goal}
+				</p>
 				<div class="mt-8 max-w-2xl space-y-5">
 					{#each hero.intro as paragraph}
 						<p class="text-base leading-8 text-slate-300 sm:text-lg">{paragraph}</p>
 					{/each}
 				</div>
-				<p
+				<!-- <p
 					class="mt-9 max-w-2xl border-l border-sky-400/40 pl-5 text-xl font-semibold tracking-tight text-slate-100 sm:text-2xl"
 				>
 					{hero.goal}
-				</p>
+				</p> -->
 			</div>
 
 			<div class="relative mx-auto w-full max-w-xl lg:mx-0">

@@ -7,7 +7,7 @@
 <section class="about-section px-6 py-16 lg:px-8 lg:py-24">
 	<div class="about-container">
 		<div
-			class="relative overflow-hidden rounded-[2rem] border border-slate-700/80 bg-linear-to-br from-slate-900/80 via-slate-900/70 to-indigo-950/30 p-8 shadow-[0_0_85px_-35px_rgba(56,189,248,0.5)] sm:p-10 lg:p-12"
+			class="relative overflow-hidden rounded-4xl border border-slate-700/80 bg-linear-to-br from-slate-900/80 via-slate-900/70 to-indigo-950/30 p-8 shadow-[0_0_85px_-35px_rgba(56,189,248,0.5)] sm:p-10 lg:p-12"
 		>
 			<div
 				aria-hidden="true"
