@@ -24,6 +24,7 @@ function originForUpstream(request: Request, fallback: string | undefined): stri
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MESSAGE_MIN = 40;
 const MESSAGE_MAX = 10_000;
 
 type FieldErrors = Record<string, string[]>;
@@ -44,6 +45,7 @@ function validateEmail(trimmed: string): string | null {
 
 function validateMessage(trimmed: string): string | null {
 	if (trimmed.length === 0) return 'Message is required.';
+	if (trimmed.length < MESSAGE_MIN) return `Message must be at least ${MESSAGE_MIN} characters.`;
 	if (trimmed.length > MESSAGE_MAX) return `Message must be at most ${MESSAGE_MAX} characters.`;
 	return null;
 }

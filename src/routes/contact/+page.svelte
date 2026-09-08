@@ -1,4 +1,5 @@
 <script>
+	const MESSAGE_MIN = 40;
 	const MESSAGE_MAX = 10_000;
 	const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -34,6 +35,8 @@
 		else if (!EMAIL_RE.test(emailT)) errors.email = 'Please enter a valid email address.';
 
 		if (messageT.length === 0) errors.message = 'Message is required.';
+		else if (messageT.length < MESSAGE_MIN)
+			errors.message = `Message must be at least ${MESSAGE_MIN} characters.`;
 		else if (messageT.length > MESSAGE_MAX)
 			errors.message = `Message must be at most ${MESSAGE_MAX} characters.`;
 
@@ -246,6 +249,9 @@
 					name="message"
 					placeholder="Tell us about your project..."
 					autocomplete="off"
+					required
+					minlength={MESSAGE_MIN}
+					maxlength={MESSAGE_MAX}
 					bind:value={message}
 				></textarea>
 				{#if fieldErrors.message}
